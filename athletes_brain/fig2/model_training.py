@@ -25,6 +25,7 @@ from athletes_brain.fig2.utils import (
     check_and_load_existing_artifact,
 )
 from athletes_brain.fig2.config import OUTPUT_DIR, REGION_COL
+from sklearn.utils import class_weight
 
 
 def train_and_evaluate_model(
@@ -214,7 +215,12 @@ def train_base_models(data_wide, parcels, group_name, force_retrain: bool = Fals
 
 
 def train_stacked_base_models(
-    common_sessions, data_wide, parcels, group_name, force_retrain: bool = False
+    common_sessions,
+    data_wide,
+    parcels,
+    group_name,
+    force_retrain: bool = False,
+    model_name: str = "xgb",
 ):
     """
     Trains base models for each ROI, used as inputs for the final stacked model.
@@ -297,7 +303,6 @@ def train_stacked_base_models(
         return predictions_base_stacked, stacked_models_results, tmp_df_template
 
     # Initiate CV for subjects to ensure groups are preserved
-    gkf_splits = list(cv.split(tmp_df_template, tmp_df_template["target"], groups=subjects))
 
     for i, row in parcels.iterrows():
         roi_dest = CUR_DEST / f"roi_{row[REGION_COL]}"
@@ -325,17 +330,29 @@ def train_stacked_base_models(
             [
                 ("preprocessor", preprocessor),
                 ("imputer", SimpleImputer(strategy="mean")),
-                ("classifier", AVAILABLE_MODELS[MODEL_NAME]),
+                # ("classifier", AVAILABLE_MODELS[MODEL_NAME]),
+                ("classifier", AVAILABLE_MODELS[model_name]),
             ]
         )
 
+        if MODEL_NAME == "xgb":
+            # add class weights for XGBoost
+            class_weights = class_weight.compute_class_weight(
+                class_weight="balanced",
+                classes=np.unique(y),
+                y=y,
+            )
+            class_weights_dict = {i: class_weights[i] for i in range(len(class_weights))}
+            pipe.set_params(classifier__scale_pos_weight=class_weights_dict.get(1, 1))
+
         grid = GridSearchCV(
             pipe,
-            AVAILABLE_PARAMS[MODEL_NAME],
+            AVAILABLE_PARAMS[model_name],
             cv=cv,
             n_jobs=-1,
             scoring="average_precision",
             verbose=0,
+            error_score="raise",
         )
         grid.fit(X_roi, y, groups=subjects)
 

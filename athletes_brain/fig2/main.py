@@ -27,6 +27,7 @@ from athletes_brain.fig2.utils import save_results, save_predictions, save_model
 
 
 FORCE = False
+FORCE_STACKING = True
 
 
 def main(force_retrain: bool = False):
@@ -85,7 +86,7 @@ def main(force_retrain: bool = False):
         print(f"\n--- Running stacked base model training for group: {group_name} ---")
         predictions_base_stacked, stacked_models_results, common_data_template = (
             train_stacked_base_models(
-                common_sessions, data_wide, parcels, group_name, force_retrain
+                common_sessions, data_wide, parcels, group_name, FORCE_STACKING
             )
         )
 
@@ -100,7 +101,7 @@ def main(force_retrain: bool = False):
         # 5. Train Final Stacked Model
         final_stacked_results, final_stacked_predictions, final_stacked_best_model = (
             train_final_stacked_model(
-                predictions_base_stacked, common_data_template, group_name, force_retrain
+                predictions_base_stacked, common_data_template, group_name, FORCE_STACKING
             )
         )
         all_results[group_name]["final_stacked_model"] = final_stacked_results

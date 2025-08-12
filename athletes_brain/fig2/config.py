@@ -1,8 +1,9 @@
 from pathlib import Path
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.model_selection import GroupKFold
+from xgboost import XGBClassifier, XGBRegressor
 
 # Model Definitions
 AVAILABLE_MODELS = {
@@ -10,6 +11,19 @@ AVAILABLE_MODELS = {
     "rf": RandomForestClassifier(random_state=42, class_weight="balanced", n_jobs=-1),
     "svm": SVC(random_state=42, class_weight="balanced", kernel="rbf", probability=True),
     "logreg": LogisticRegression(random_state=42, class_weight="balanced", max_iter=int(1e6)),
+    "xgb": XGBClassifier(
+        random_state=42,
+        # use_label_encoder=False,
+        eval_metric="logloss",
+        n_jobs=10,
+        tree_method="hist",
+        device="cpu",
+    ),
+    "xgbreg": XGBRegressor(
+        random_state=42,
+        # use_label_encoder=False,
+    ),
+    "gbm": GradientBoostingClassifier(random_state=42, n_estimators=100, max_depth=3),
 }
 
 # Hyperparameter Grids
@@ -38,6 +52,29 @@ AVAILABLE_PARAMS = {
         "classifier__C": [0.1, 1, 10, 100, 1000],
         "classifier__penalty": ["l1", "l2"],
         "classifier__solver": ["liblinear"],  # 'liblinear' supports 'l1' and 'l2' penalties
+    },
+    "xgb": {
+        "classifier__n_estimators": [100, 200, 300],
+        "classifier__max_depth": [3, 5, 7, 9],
+        "classifier__learning_rate": [0.01, 0.1, 0.2],
+        # "classifier__subsample": [0.8, 1.0],
+        # "classifier__colsample_bytree": [0.8, 1.0],
+        # "classifier__gamma": [0, 0.1, 0.2],
+    },
+    "xgbreg": {
+        "classifier__n_estimators": [100, 200, 300],
+        "classifier__max_depth": [3, 5, 7, 9],
+        "classifier__learning_rate": [0.01, 0.1, 0.2],
+        # "classifier__subsample": [0.8, 1.0],
+        # "classifier__colsample_bytree": [0.8, 1.0],
+        # "classifier__gamma": [0, 0.1, 0.2],
+    },
+    "gbm": {
+        "classifier__n_estimators": [100, 200, 300],
+        "classifier__learning_rate": [0.01, 0.1, 0.2],
+        "classifier__max_depth": [3, 5, 7],
+        "classifier__min_samples_split": [2, 5, 10],
+        "classifier__min_samples_leaf": [1, 2, 4],
     },
 }
 
