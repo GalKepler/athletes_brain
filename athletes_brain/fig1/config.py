@@ -32,6 +32,9 @@ class Fig1Config:
     VMAX = 5
     P_THRESHOLD = 0.05
     VALUE_THRESHOLD = 0
+    DPI = 400  # Default DPI for saving figures
+    # Colormap configuration
+    COLORMAP = "coolwarm"  # Default colormap for visualization
 
     # Colors
     COL_RAW = "#ffb300"

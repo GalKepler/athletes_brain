@@ -161,7 +161,7 @@ class BrainPlotter:
             # Add data layer
             p.add_layer(
                 {hemi_key: mapped_data},
-                cmap="coolwarm",
+                cmap="coolwarm" or self.config.COLORMAP,
                 color_range=(self.config.VMIN, self.config.VMAX),
                 cbar_label=value_column,
                 cbar=True,
@@ -173,7 +173,7 @@ class BrainPlotter:
             # Build and save figure
             fig = p.build()
             out_fname = output_dir / f"{hemi_key}_{metric_key}.png"
-            savefig_nice(fig, out_fname, tight=True, dpi=300)
+            savefig_nice(fig, out_fname, tight=True, dpi=self.config.DPI)
 
             logger.info(f"Saved {hemi_key} hemisphere plot to {out_fname}")
 
@@ -201,7 +201,7 @@ class BrainPlotter:
                 atlas="Melbourne_S3",
                 show_legend=True,
                 hemisphere=hemi,
-                cmap="coolwarm",
+                cmap="coolwarm" or self.config.COLORMAP,
                 line_color="black",
                 line_thickness=2,
                 vmin=self.config.VMIN,
