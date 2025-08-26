@@ -69,10 +69,10 @@ cv = GroupKFold(n_splits=5, shuffle=True, random_state=42)
 ATLAS = "schaefer2018tian2020_400_7"
 region_col = "index"
 # Load important files
-DATA_DIR = Path("/home/galkepler/Projects/athletes_brain/data")
+DATA_DIR = Path("/media/storage/phd/athletes_brain/data")
 
 # Output directory for figures
-OUTPUT_DIR = Path("/home/galkepler/Projects/athletes_brain/figures/fig2")
+OUTPUT_DIR = Path("/media/storage/phd/athletes_brain/figures/fig2")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Load the data
@@ -484,7 +484,7 @@ if __name__ == "__main__":
         # Save the results for the parcel
         CUR_DEST = OUTPUT_DIR / GROUP_NAME / "stacked"
         CUR_DEST.mkdir(parents=True, exist_ok=True)
-        stacked_models.to_csv(CUR_DEST / "results.csv")
+        stacked_models.to_csv(CUR_DEST / "roi_results.csv")
         # save OOF predictions
         # predictions_df = pd.DataFrame(predictions["base_stacked"]).T
     for GROUP, GROUP_NAME in GROUP_NAMES.items():
@@ -492,8 +492,13 @@ if __name__ == "__main__":
         learner_df = df_template.copy()
         # use predictions of base stacked
         new_X = pd.DataFrame(
-            {roi: predictions["base_stacked"][roi]["proba"] for roi in stacked_estimators.keys()},
-            index=predictions["base_stacked"][list(stacked_estimators.keys())[0]].index,
+            {
+                roi: predictions[GROUP_NAME]["base_stacked"][roi]["proba"]
+                for roi in stacked_estimators.keys()
+            },
+            index=predictions[GROUP_NAME]["base_stacked"][
+                list(stacked_estimators.keys())[0]
+            ].index,
         )
         # add sex, age, group, target
         new_X = new_X.join(tmp[["age_at_scan", "sex"]])

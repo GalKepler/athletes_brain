@@ -7,10 +7,9 @@ import numpy as np
 from surfplot import Plot
 from neuromaps.datasets import fetch_fslr
 from brainspace.datasets import load_parcellation
+from athletes_brain.fig1.config import Fig1Config, savefig_nice
 from subcortex_visualization.plotting import plot_subcortical_data
 from loguru import logger
-
-from .config import Fig1Config, savefig_nice
 
 
 class BrainPlotter:
@@ -125,7 +124,7 @@ class BrainPlotter:
             raise ValueError("Surfaces not set up. Call setup_surfaces() first.")
 
         lh_parc, rh_parc = self.parcellations["lh"], self.parcellations["rh"]
-        lh_surf, rh_surf = self.surfaces["veryinflated"]
+        lh_surf, rh_surf = self.surfaces["inflated"]
 
         # Vectorize mapping for hemispheres
         vec_lh = np.vectorize(lambda x: value_map_lh.get(x, np.nan))
@@ -161,7 +160,7 @@ class BrainPlotter:
             # Add data layer
             p.add_layer(
                 {hemi_key: mapped_data},
-                cmap="coolwarm" or self.config.COLORMAP,
+                cmap=self.config.COLORMAP or "coolwarm",
                 color_range=(self.config.VMIN, self.config.VMAX),
                 cbar_label=value_column,
                 cbar=True,
@@ -201,7 +200,7 @@ class BrainPlotter:
                 atlas="Melbourne_S3",
                 show_legend=True,
                 hemisphere=hemi,
-                cmap="coolwarm" or self.config.COLORMAP,
+                cmap=self.config.COLORMAP or "coolwarm",
                 line_color="black",
                 line_thickness=2,
                 vmin=self.config.VMIN,

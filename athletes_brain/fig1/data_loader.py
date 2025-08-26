@@ -59,10 +59,18 @@ class AthletesBrainDataLoader:
             )
 
             # Remove duplicates
-            df = df.drop_duplicates(subset=["subject_code", self.config.REGION_COL], keep="last")
+            # df = df.drop_duplicates(subset=["subject_code", self.config.REGION_COL], keep="last")
 
             # Remove problematic subjects
             df = df[~df["subject_code"].isin(self.config.BAD_SUBJECTS)]
+            df["subject_code"] = (
+                df["subject_code"]
+                .astype(str)
+                .str.replace("-", "")
+                .str.replace(" ", "")
+                .str.replace("_", "")
+                .str.zfill(4)
+            )
 
             # Encode sex as numeric
             df["sex"] = df["sex"].map({"M": 0, "F": 1})

@@ -1,7 +1,10 @@
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from athletes_brain.fig2.config import REGION_COL, DEMOGRAPHIC_COLS
+from athletes_brain.fig2.config import Fig2Config
+
+REGION_COL = Fig2Config.REGION_COL
+DEMOGRAPHIC_COLS = Fig2Config.DEMOGRAPHIC_COLS
 
 
 def long_to_wide(

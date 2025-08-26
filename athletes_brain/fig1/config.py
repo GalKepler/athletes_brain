@@ -15,8 +15,8 @@ class Fig1Config:
     REGION_COL = "index"
 
     # Metrics to analyze
-    # METRICS = ["gm_vol", "wm_vol", "csf_vol", "adc", "fa", "ad", "rd"]
-    METRICS = ["gm_vol", "adc"]
+    METRICS = ["gm_vol", "wm_vol", "csf_vol", "adc", "fa", "ad", "rd"]
+    # METRICS = ["gm_vol", "adc"]
     DISTRIBUTION_METRIC = "qfmean"
 
     # Bad subjects to exclude
