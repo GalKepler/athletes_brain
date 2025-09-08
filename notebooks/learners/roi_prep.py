@@ -169,6 +169,7 @@ def prepare_roi_longitudinal(df: pd.DataFrame, config: PrepConfig = PrepConfig()
     keep = [
         "subject_code",
         "scan_dt",
+        "session_id",
         "tp_label",
         "time_days",
         "time_months",
@@ -178,6 +179,7 @@ def prepare_roi_longitudinal(df: pd.DataFrame, config: PrepConfig = PrepConfig()
         "sex",
         "tiv",
         "y",
+        "assessment_score",
     ]
     tidy = d[[i for i in keep if i in d.columns]].dropna(subset=["y", "scan_dt"]).copy()
 
