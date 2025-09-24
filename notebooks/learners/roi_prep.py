@@ -180,6 +180,7 @@ def prepare_roi_longitudinal(df: pd.DataFrame, config: PrepConfig = PrepConfig()
         "tiv",
         "y",
         "assessment_score",
+        "assessment_timestamp",
     ]
     tidy = d[[i for i in keep if i in d.columns]].dropna(subset=["y", "scan_dt"]).copy()
 
